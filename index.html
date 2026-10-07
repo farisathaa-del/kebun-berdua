@@ -24,6 +24,8 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.5px}
 .chip.on{background:var(--chipOn);color:var(--chipOnInk)}
 .map{position:relative;border-radius:26px;overflow:hidden;box-shadow:0 2px 10px rgba(40,50,30,.1)}
 .map svg{display:block;width:100%;height:auto;will-change:transform;transform-origin:0 0}
+.map .fbg{transition:opacity .35s ease}
+.map svg.win-enter .fbg{opacity:0}
 .map .z{cursor:pointer}
 .xp{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;border:0;background:#fff;color:#1F3A2E;font-size:16px;cursor:pointer}
 .hint{margin-top:16px;background:var(--tint);border-radius:20px;padding:18px;display:flex;gap:14px;align-items:center}
@@ -75,7 +77,7 @@ nav .on svg{fill:currentColor;fill-opacity:.9}
 .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);background:#1F3A2E;color:#fff;padding:11px 18px;border-radius:99px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:9;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
 .log{padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
 .map .z:active{opacity:.85}.map{isolation:isolate}
-@media(prefers-reduced-motion:no-preference){@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}#stock,#home,#harv{animation:vin .35s ease both}#info.ani>*{animation:vin .45s .1s ease both}.chip,.cat,.lnk{transition:transform .12s}.chip:active,.cat:active,.lnk:active{transform:scale(.97)}}
+@media(prefers-reduced-motion:no-preference){@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes vin2{from{opacity:.6;transform:translateY(6px)}to{opacity:1;transform:none}}#stock,#home,#harv{animation:vin .35s ease both}#info.ani>*{animation:vin2 .12s ease both}.chip,.cat,.lnk{transition:transform .12s}.chip:active,.cat:active,.lnk:active{transform:scale(.97)}}
 .auth{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column;justify-content:center;padding:28px;max-width:430px;margin:0 auto}
 .auth h2{font-size:22px;margin-bottom:4px}.auth .sub{margin-bottom:18px}
 .auth input{width:100%;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px inherit;font-family:inherit;margin-bottom:10px}
@@ -171,7 +173,7 @@ const tree=(x,y,r)=>`<use href="#a-tree" transform="translate(${x} ${y}) scale($
 const roof=(x,y,w,h)=>{const cx=x+w/2,cy=y+h/2;return `<rect x="${x+3}" y="${y+5}" width="${w}" height="${h}" rx="2" fill="#000" opacity=".25"/><polygon points="${x},${y} ${x+w},${y} ${cx},${cy}" fill="url(#rfT)"/><polygon points="${x},${y+h} ${x+w},${y+h} ${cx},${cy}" fill="url(#rfB)"/><polygon points="${x},${y} ${x},${y+h} ${cx},${cy}" fill="url(#rfS)"/><polygon points="${x+w},${y} ${x+w},${y+h} ${cx},${cy}" fill="url(#rfS)"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#shing)"/><path d="M${x} ${y}L${cx} ${cy}M${x+w} ${y}L${cx} ${cy}M${x} ${y+h}L${cx} ${cy}M${x+w} ${y+h}L${cx} ${cy}" stroke="#6E2616" stroke-opacity=".55" stroke-width="1.3"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#8E3A24" stroke-width="1.6"/><rect x="${x+w*.55}" y="${y+h*.3}" width="7" height="7" fill="#8B94A0" stroke="#6B747F" stroke-width=".6"/>`};
 const bed=(x,y,w,h)=>{let s='';for(let i=0;i<14;i++){s+=`<circle cx="${x+4+(i%5)*((w-8)/4)}" cy="${y+5+Math.floor(i/5)*((h-10)/2)}" r="2.6" fill="${['#F2C94C','#E5483A','#fff','#C77DDA','#F28A2E'][i%5]}"/>`}return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="#7A5A3C"/>`+s};
 const car=(x,y,k)=>`<rect x="${x}" y="${y}" width="${12*k}" height="${24*k}" rx="${4*k}" fill="#3A63B8"/><rect x="${x+2*k}" y="${y+6*k}" width="${8*k}" height="${9*k}" rx="${2*k}" fill="#B9D3F0"/>`;
-const frame=(bg,inner)=>`<svg viewBox="0 0 340 340">${defs}<rect width="340" height="340" fill="#8FB470"/><rect x="12" y="12" width="316" height="316" rx="26" fill="${bg}" stroke="#F7F9F0" stroke-width="4"/><rect x="12" y="12" width="316" height="316" rx="26" filter="url(#grain)" opacity=".2"/>${inner}<rect x="12" y="12" width="316" height="316" rx="26" fill="url(#light)"/></svg>`;
+const frame=(bg,inner)=>`<svg viewBox="0 0 340 340">${defs}<rect class="fbg" width="340" height="340" fill="#8FB470"/><rect class="fbg" x="12" y="12" width="316" height="316" rx="26" fill="${bg}" stroke="#F7F9F0" stroke-width="4"/><rect x="12" y="12" width="316" height="316" rx="26" filter="url(#grain)" opacity=".2"/>${inner}<rect x="12" y="12" width="316" height="316" rx="26" fill="url(#light)"/></svg>`;
 const cow=(x,y)=>`<use href="#a-cow" transform="translate(${x} ${y})"/>`;
 
 const bush=(x,y,r=7)=>`<use href="#a-tree" transform="translate(${x} ${y}) scale(${r/10})"/>`;
@@ -245,8 +247,8 @@ function xfade(mp,html,cb){
  const h1=n.getBoundingClientRect().height;
  mp.style.height=h0+'px';n.style.transform='scale(1.05)';void mp.offsetHeight;
  mp.style.transition='height .6s cubic-bezier(.2,.8,.2,1)';mp.style.height=h1+'px';
- n.style.transition='opacity .5s ease,transform .7s cubic-bezier(.2,.8,.2,1)';
- old.style.transition='opacity .5s ease';
+ n.style.transition='opacity .35s ease,transform .7s cubic-bezier(.2,.8,.2,1)';
+ const _ot=old.style.transition;old.style.transition=_ot&&_ot.indexOf('transform')>=0?_ot:'opacity .5s ease';old.style.transitionDelay=_ot&&_ot.indexOf('transform')>=0?'0s,.15s':'.15s';
  requestAnimationFrame(()=>{n.style.opacity=1;n.style.transform='none';old.style.opacity=0});
  setTimeout(()=>{old.remove();n.style.cssText='';mp.style.cssText='';busy=0;if(cb)cb()},800)}
 function paint(k,prev,anim){
@@ -254,7 +256,21 @@ function paint(k,prev,anim){
  if(busy&&!anim)return;
  if(!anim||k===prev||RM()||!mp.firstElementChild){mp.innerHTML=views[k];return}
  busy=1;
- if(prev==='overview'&&BB[k]){const sv=mp.querySelector('svg');setTimeout(()=>xfade(mp,views[k]),450);vb(sv,FULL,zoomBox(BB[k]),900)}
+ if(prev==='overview'&&BB[k]){const sv=mp.querySelector('svg'),zb=zoomBox(BB[k]),r=sv.getBoundingClientRect();
+ const sf=Math.min(r.width/zb[2],r.height/zb[3])/Math.min(r.width/340,r.height/410);
+ // ponytail: detail masuk menyambung zoom (scale awal = posisi zoom saat ini / target) → potongan cut tak terlihat
+ setTimeout(()=>{xfade(mp,views[k]);
+  const n=mp.lastElementChild,c=new DOMMatrix(getComputedStyle(sv).transform),s0=c.a/sf;
+  const se=n.querySelector('svg');
+  if(se){se.classList.add('win-enter');se.querySelectorAll('.fbg').forEach(r=>{r.style.transition='none';r.style.opacity='0'});}
+  setTimeout(()=>{const s2=mp.lastElementChild&&mp.lastElementChild.querySelector('svg');if(s2){s2.classList.remove('win-enter');s2.querySelectorAll('.fbg').forEach(r=>{r.style.transition='';r.style.opacity=''})}},500);
+   e0=.5,x=zb[0]*e0,w=340+(zb[2]-340)*e0,h=410+(zb[3]-410)*e0,
+   zx=BB[k][0]+BB[k][2]/2,zy=BB[k][1]+BB[k][3]/2,
+   tx=(zx-x)/w*r.width-r.width/2*s0, ty=(zy-(zb[1]*e0))/h*r.height-r.width/2*s0;
+  // ponytail: posisi+ukuran zona detail disambungkan ke peta zoom (start = proyeksi zona saat ini) → cut lenyap
+  n.style.transition='none';n.style.transform='translate('+tx+'px,'+ty+'px) scale('+s0+')';void n.getBoundingClientRect().height;
+  n.style.transition='opacity .15s ease,transform 450ms cubic-bezier(.3,0,.35,1)'},450);
+ vb(sv,FULL,zb,900)}
  else if(k==='overview'&&BB[prev]){xfade(mp,views.overview);vb(mp.lastElementChild,zoomBox(BB[prev]),FULL,750)}
  else xfade(mp,views[k])}
 function go(k,anim){
@@ -279,7 +295,7 @@ $('#info').className=anim?'ani':'';
  }
  $('#info').innerHTML=h;
 };
- if(anim)setTimeout(upd,450);else upd();
+ if(anim)setTimeout(upd,300);else upd();
 }
 const TYPE={sapi:['🐄','Cows'],ayam:['🐔','Chickens'],domba:['🐑','Sheep'],kambing:['🐐','Goats']};
 let A={},catK='sapi';
