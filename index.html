@@ -242,20 +242,22 @@ function xfade(mp,html,cb){
  n.style.transition='opacity .5s ease,transform .7s cubic-bezier(.2,.8,.2,1)';
  old.style.transition='opacity .5s ease';
  requestAnimationFrame(()=>{n.style.opacity=1;n.style.transform='none';old.style.opacity=0});
- setTimeout(()=>{old.remove();n.style.cssText='';mp.style.cssText='';busy=0;if(cb)cb()},720)}
+ setTimeout(()=>{old.remove();n.style.cssText='';mp.style.cssText='';busy=0;if(cb)cb()},800)}
 function paint(k,prev,anim){
  const mp=$('#map');
  if(busy&&!anim)return;
  if(!anim||k===prev||RM()||!mp.firstElementChild){mp.innerHTML=views[k];return}
  busy=1;
- if(prev==='overview'&&BB[k])vb(mp.querySelector('svg'),FULL,zoomBox(BB[k]),700,()=>xfade(mp,views[k]));
+ if(prev==='overview'&&BB[k]){const sv=mp.querySelector('svg');setTimeout(()=>xfade(mp,views[k]),450);vb(sv,FULL,zoomBox(BB[k]),900)}
  else if(k==='overview'&&BB[prev]){xfade(mp,views.overview);vb(mp.lastElementChild,zoomBox(BB[prev]),FULL,750)}
  else xfade(mp,views[k])}
 function go(k,anim){
- if(anim&&busy)return;
+ if(busy)return;
  if(k==='livestock'){show('stock');return}
  if(!views[k]){toast('Coming in v2');return}
- const prev=cur;cur=k;paint(k,prev,anim);$('#info').className=anim?'ani':'';
+ const prev=cur;cur=k;paint(k,prev,anim);
+const upd=()=>{
+$('#info').className=anim?'ani':'';
  $('#chips').innerHTML=tabs.map(t=>`<button class="chip${t[0]===k?' on':''}" data-k="${t[0]}">${t[1]} ${t[2]}</button>`).join('');
  const on=$('.chip.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});
  const cz=['tomato','veg','corn'].filter(x=>S.f[x]).length,ac=Object.values(A).reduce((s,c)=>s+c.n,0);
@@ -270,6 +272,8 @@ function go(k,anim){
   }else h=`<div class="card"><div class="hd"><div class="ico">${d.i}</div><div><h3>${d.t}</h3><p>${d.s}</p></div></div><div class="st">${d.st.map(x=>`<div><small>${x[0]}</small><b>${x[1]}</b></div>`).join('')}</div>${k==='animals'?'<button class="btn pri" data-z="livestock">🐄 Open livestock</button>':''}</div>`;
  }
  $('#info').innerHTML=h;
+};
+ if(anim)setTimeout(upd,450);else upd();
 }
 const TYPE={sapi:['🐄','Cows'],ayam:['🐔','Chickens'],domba:['🐑','Sheep'],kambing:['🐐','Goats']};
 let A={},catK='sapi';
