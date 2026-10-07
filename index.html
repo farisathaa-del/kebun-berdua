@@ -23,7 +23,7 @@ h1{font-size:28px;font-weight:700;letter-spacing:-.5px}
 .chip{flex:none;border:0;background:var(--chip);color:var(--ink);font:600 14px inherit;font-family:inherit;padding:12px 18px;border-radius:99px;display:flex;gap:8px;align-items:center;cursor:pointer;box-shadow:0 1px 4px rgba(40,50,30,.06)}
 .chip.on{background:var(--chipOn);color:var(--chipOnInk)}
 .map{position:relative;border-radius:26px;overflow:hidden;box-shadow:0 2px 10px rgba(40,50,30,.1)}
-.map svg{display:block;width:100%;height:auto}
+.map svg{display:block;width:100%;height:auto;will-change:transform;transform-origin:0 0}
 .map .z{cursor:pointer}
 .xp{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;border:0;background:#fff;color:#1F3A2E;font-size:16px;cursor:pointer}
 .hint{margin-top:16px;background:var(--tint);border-radius:20px;padding:18px;display:flex;gap:14px;align-items:center}
@@ -231,7 +231,13 @@ let busy=0;
 const RM=()=>matchMedia('(prefers-reduced-motion:reduce)').matches;
 const ez=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 function zoomBox(b){const A=340/410;let w=b[2]+14,h=w/A;if(h<b[3]+14){h=b[3]+14;w=h*A}return [b[0]+b[2]/2-w/2,b[1]+b[3]/2-h/2,w,h]}
-function vb(svg,a,b,D,cb){const t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/D),q=ez(p);svg.setAttribute('viewBox',a.map((v,i)=>v+(b[i]-v)*q).join(' '));if(p<1)requestAnimationFrame(f);else if(cb)cb()})(t0)}
+function vb(svg,a,b,D,cb){const r=svg.getBoundingClientRect(),v=(svg.getAttribute('viewBox')||'0 0 340 410').split(' ').map(Number),U=Math.min(r.width/v[2],r.height/v[3]),X0=(r.width-v[2]*U)/2,Y0=(r.height-v[3]*U)/2;
+ // ponytail: zoom via CSS transform (GPU) — viewBox statis, nol re-layout per frame (riset: viewBox=layout tiap frame)
+ const tf=s=>{const U2=Math.min(r.width/s[2],r.height/s[3]),k=U2/U,ox=(r.width-s[2]*U2)/2,oy=(r.height-s[3]*U2)/2;return `translate(${ox-k*(X0+s[0]*U)}px,${oy-k*(Y0+s[1]*U)}px) scale(${k})`};
+ svg.style.transition='none';svg.style.transform=tf(a);void svg.getBoundingClientRect().height; // offsetHeight undefined di SVG → paksa reflow ini, komit nilai awal sebelum transisi
+ svg.style.transition=`transform ${D}ms cubic-bezier(.65,0,.35,1),opacity .5s ease`;
+ requestAnimationFrame(()=>{svg.style.transform=tf(b)});
+ setTimeout(()=>{svg.style.transition='none';if(cb)cb()},D+40)}
 function xfade(mp,html,cb){
  const old=mp.firstElementChild,h0=mp.offsetHeight;
  mp.insertAdjacentHTML('beforeend',html);const n=mp.lastElementChild;
